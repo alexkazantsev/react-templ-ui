@@ -29,7 +29,7 @@ function RouteComponent() {
         user.id,
         user.name,
         user.email,
-        user.created_at.toISOString(),
+        user.created_at,
       ]),
     [response],
   );

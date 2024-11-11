@@ -1,11 +1,11 @@
 export const Sidebar = () => {
   return (
-    <div className="hidden w-64 flex-col bg-white md:flex dark:bg-gray-700">
-      <div className="flex h-16 items-center justify-center bg-blue-50 dark:bg-gray-900">
+    <div className="hidden w-64 flex-col bg-gray-700 md:flex">
+      <div className="flex h-16 items-center justify-center bg-gray-900">
         <span className="font-bold uppercase text-white">Sidebar</span>
       </div>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <nav className="flex-1 bg-white px-2 py-4 dark:bg-gray-800">
+        <nav className="flex-1 bg-gray-800 px-2 py-4">
           <a
             href="#"
             className="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700"
