@@ -1,4 +1,4 @@
-import { AxiosClient } from '../utils/base-url';
+import { AxiosClient } from '../utils/http-client';
 import { queryOptions } from '@tanstack/react-query';
 
 type User = {
@@ -20,7 +20,7 @@ type FindManyParams = {
 
 export const findManyUsers = async ({
   queryKey,
-}): Promise<Response<User[]>> => {
+}: any): Promise<Response<User[]>> => {
   const [_, params] = queryKey;
   const { data } = await AxiosClient.get<Response<User[]>>('/users/', {
     params,
