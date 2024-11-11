@@ -5,10 +5,14 @@ import './index.css';
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const client = new QueryClient();
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
+  context: { client },
   defaultPreload: 'intent',
   defaultStaleTime: 5000,
 });
@@ -27,7 +31,9 @@ if (container) {
 
   root.render(
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={client}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </React.StrictMode>,
   );
 } else {

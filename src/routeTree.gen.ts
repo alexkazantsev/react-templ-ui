@@ -12,17 +12,24 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LandingImport } from './routes/_landing'
+import { Route as DashboardImport } from './routes/_dashboard'
 import { Route as LandingIndexImport } from './routes/_landing/index'
 import { Route as LandingSignupImport } from './routes/_landing/signup'
 import { Route as LandingProductsImport } from './routes/_landing/products'
 import { Route as LandingPricesImport } from './routes/_landing/prices'
 import { Route as LandingLoginImport } from './routes/_landing/login'
 import { Route as LandingAboutImport } from './routes/_landing/about'
+import { Route as DashboardUsersImport } from './routes/_dashboard/users'
 
 // Create/Update Routes
 
 const LandingRoute = LandingImport.update({
   id: '/_landing',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardRoute = DashboardImport.update({
+  id: '/_dashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -62,16 +69,36 @@ const LandingAboutRoute = LandingAboutImport.update({
   getParentRoute: () => LandingRoute,
 } as any)
 
+const DashboardUsersRoute = DashboardUsersImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
     '/_landing': {
       id: '/_landing'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LandingImport
       parentRoute: typeof rootRoute
+    }
+    '/_dashboard/users': {
+      id: '/_dashboard/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof DashboardUsersImport
+      parentRoute: typeof DashboardImport
     }
     '/_landing/about': {
       id: '/_landing/about'
@@ -120,6 +147,18 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface DashboardRouteChildren {
+  DashboardUsersRoute: typeof DashboardUsersRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardUsersRoute: DashboardUsersRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 interface LandingRouteChildren {
   LandingAboutRoute: typeof LandingAboutRoute
   LandingLoginRoute: typeof LandingLoginRoute
@@ -143,6 +182,7 @@ const LandingRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof LandingRouteWithChildren
+  '/users': typeof DashboardUsersRoute
   '/about': typeof LandingAboutRoute
   '/login': typeof LandingLoginRoute
   '/prices': typeof LandingPricesRoute
@@ -152,6 +192,8 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '': typeof DashboardRouteWithChildren
+  '/users': typeof DashboardUsersRoute
   '/about': typeof LandingAboutRoute
   '/login': typeof LandingLoginRoute
   '/prices': typeof LandingPricesRoute
@@ -162,7 +204,9 @@ export interface FileRoutesByTo {
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/_dashboard': typeof DashboardRouteWithChildren
   '/_landing': typeof LandingRouteWithChildren
+  '/_dashboard/users': typeof DashboardUsersRoute
   '/_landing/about': typeof LandingAboutRoute
   '/_landing/login': typeof LandingLoginRoute
   '/_landing/prices': typeof LandingPricesRoute
@@ -175,6 +219,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/users'
     | '/about'
     | '/login'
     | '/prices'
@@ -182,10 +227,20 @@ export interface FileRouteTypes {
     | '/signup'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/login' | '/prices' | '/products' | '/signup' | '/'
+  to:
+    | ''
+    | '/users'
+    | '/about'
+    | '/login'
+    | '/prices'
+    | '/products'
+    | '/signup'
+    | '/'
   id:
     | '__root__'
+    | '/_dashboard'
     | '/_landing'
+    | '/_dashboard/users'
     | '/_landing/about'
     | '/_landing/login'
     | '/_landing/prices'
@@ -196,10 +251,12 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
+  DashboardRoute: typeof DashboardRouteWithChildren
   LandingRoute: typeof LandingRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  DashboardRoute: DashboardRouteWithChildren,
   LandingRoute: LandingRouteWithChildren,
 }
 
@@ -213,7 +270,14 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/_dashboard",
         "/_landing"
+      ]
+    },
+    "/_dashboard": {
+      "filePath": "_dashboard.tsx",
+      "children": [
+        "/_dashboard/users"
       ]
     },
     "/_landing": {
@@ -226,6 +290,10 @@ export const routeTree = rootRoute
         "/_landing/signup",
         "/_landing/"
       ]
+    },
+    "/_dashboard/users": {
+      "filePath": "_dashboard/users.tsx",
+      "parent": "/_dashboard"
     },
     "/_landing/about": {
       "filePath": "_landing/about.tsx",
